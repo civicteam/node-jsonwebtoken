@@ -8,11 +8,8 @@ var jws               = require('jws');
 var base64url = require('base64-url');
 var crypto = require('crypto');
 
-function jwsVerifyWithCryptoModule(cryptoManager, keyName, jwtString, algorithm) {
+function jwsVerifyWithCryptoModule(cryptoManager, keyName, jwtString) {
   try {
-
-    if(algorithm !== 'ES256k') return false;
-
     var parts = jwtString.split('.');
     var toVerify = Buffer.from(parts[0] + '.' + parts[1]).toString('ascii');
     var signature = base64url.decode(parts[2]);
@@ -159,7 +156,7 @@ module.exports = function (jwtString, secretOrPublicKey, options, callback) {
     try {
 
       if(cryptoManager) {
-        valid = jwsVerifyWithCryptoModule(cryptoManager, keyName, jwtString, decodedToken.header.alg)
+        valid = jwsVerifyWithCryptoModule(cryptoManager, keyName, jwtString)
       } else {
         valid = jws.verify(jwtString, decodedToken.header.alg, secretOrPublicKey);
       }
